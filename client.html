@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+ <title></title>
+ <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+ <script type="text/javascript">
+
+	 var socketio = io.connect("127.0.0.1:21000");
+	 socketio.on('message_to_client', function(data){
+	 	var d = new Date();
+		var hours = d.getHours();
+		if(hours>12){
+			hours = hours-12;
+		}else if(hours==0){
+			hours=12;
+		}
+		var minutes = d.getMinutes();
+		var seconds = d.getSeconds();
+	    document.getElementById('chatWindow').innerHTML = ("<div id=content>" + hours + ":" + minutes + '.' + seconds + ' ' + '&nbsp&nbsp&nbsp' + data['message'] + "</div>") + document.getElementById('chatWindow').innerHTML;
+	 });
+	function sendMessage(){	
+		// event.preventDefault();
+		var message = document.getElementById('message').value;
+		socketio.emit('message_to_server', {
+			message: message
+		})
+		document.getElementById('message').value = "";
+	}
+
+</script>
+<style>
+	#wrapper{
+		width: 50%;
+		margin-left: 25%;
+		text-align: center;
+	}
+	#message{
+		font-size: 20px;
+		height: 40px;
+		background: #f2f2f2;
+		height: 40px;
+		margin-top: 20px;
+	}
+
+	input{
+		width: 75%;
+		text-indent: 20px;
+	}
+
+	input::-webkit-input-placeholder{
+		text-align: center;
+	}
+
+	button{
+		background: #0088cc;
+		color: white;
+		border-radius: 4px;
+		margin-left: 3%;
+		padding: 2%;
+		height: 40px;
+		width: 20%;
+	}
+
+	#chatWindow{
+		height: 70vh;
+		overflow: scroll;
+		margin-top: 20px;
+		background: #d1d1d1;
+		text-align: left;
+	}
+	#content{
+		margin-left: 10px;
+		margin-right: 10px;
+		border-bottom: 1px solid white;
+		height: 30px;
+		line-height: 30px;
+	}
+
+</style>
+
+
+</head>
+<body>
+	<div id="wrapper">
+		<input type="text" id="message" placeholder="Enter text fool!">
+		<button onclick="sendMessage()">Send Message!</button>
+		<div id="chatWindow">
+		</div>
+	</div>
+
+</body>
+
+<!-- <body>
+	<div id="wrapper">
+		<form submit="sendMessage()">
+			<input type="text" id="message" placeholder="Enter text fool!">
+			<button type="submit">Send Message!</button>
+		</form>
+		<div id="chatWindow">
+		</div>
+	</div>
+
+</body> -->
+
+</html>
